@@ -1,1 +1,1 @@
-asterisk -f
+asterisk -vvvc
