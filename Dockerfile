@@ -8,18 +8,7 @@ RUN \
   apt-get install -y asterisk && \
   rm -rf /var/lib/apt/lists/*
 
-COPY files/sip.conf files/extensions.conf files/init.sh /tmp/
-
-# Add files.
-ADD root/.bashrc /root/.bashrc
-ADD root/.gitconfig /root/.gitconfig
-ADD root/.scripts /root/.scripts
-
-# Set environment variables.
-ENV HOME /root
-
-# Define working directory.
-WORKDIR /root
+COPY init.sh /tmp/
 
 VOLUME ["/etc/asterisk", "/var/spool/asterisk", "/var/log/asterisk"]
 # Define default command.
