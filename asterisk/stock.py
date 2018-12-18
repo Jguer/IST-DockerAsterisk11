@@ -1,11 +1,37 @@
 #!/usr/bin/python
 
-import sys
-import re
-import time
-import random
 import json
+import re
+import sys
 import urllib.request
+
+
+def checkresult(params):
+    params = params.rstrip()
+    if re.search('^200', params):
+        result = re.search('result=(\d+)', params)
+        if not result:
+            sys.stderr.write("FAIL ('%s')\n" % params)
+            sys.stderr.flush()
+            return -1
+        result = result.group(1)
+        sys.stderr.write("PASS (%s)\n" % result)
+        sys.stderr.flush()
+        return result
+    else:
+        sys.stderr.write("FAIL (unexpected result '%s')\n" % params)
+        sys.stderr.flush()
+        return -2
+
+
+def saynumber(params):
+    sys.stderr.write("SAY NUMBER %s \"\"\n" % params)
+    sys.stderr.flush()
+    sys.stdout.write("SAY NUMBER %s \"\"\n" % params)
+    sys.stdout.flush()
+    result = sys.stdin.readline().strip()
+    checkresult(result)
+
 
 MESSAGE = {
     'instruments': [{
@@ -14,14 +40,6 @@ MESSAGE = {
         "codification": "ISIN"
     }]
 }
-
-def saynumber (params):
-   sys.stderr.write("SAY NUMBER %s \"\"\n" % params)
-   sys.stderr.flush()
-   sys.stdout.write("SAY NUMBER %s \"\"\n" % params)
-   sys.stdout.flush()
-   result = sys.stdin.readline().strip()
-   checkresult(result)
 
 STOCK_URL = "http://gateway.euronext.com/api/ticker/instrumentDetail"
 req = urllib.request.Request(STOCK_URL)
